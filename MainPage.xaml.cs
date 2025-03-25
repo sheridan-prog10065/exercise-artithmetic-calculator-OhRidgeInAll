@@ -59,7 +59,19 @@ public partial class MainPage : ContentPage
 
     private double ReadSecondOperand()
     {
-        double secondOperand = double.Parse(_txtRightOp.Text);
+        string operandInput = _txtRightOp.Text;
+        double secondOperand;
+        
+        if (String.IsNullOrWhiteSpace(operandInput))
+        {
+            throw new CalculatorException("Please provide a number for the second operand!");
+        }
+
+        if(double.TryParse(operandInput, out secondOperand) == false)
+        {
+            throw new CalculatorException("That's not a number!");
+        }
+            
         return secondOperand;
     }
 
@@ -83,7 +95,19 @@ public partial class MainPage : ContentPage
 
     private double ReadFirstOperand()
     {
-        double firstOperand = double.Parse(_txtLeftOp.Text);
+        string operandInput = _txtLeftOp.Text;
+        double firstOperand;
+        
+        if (String.IsNullOrWhiteSpace(operandInput))
+        {
+            throw new CalculatorException("Please provide a number for the second operand!");
+        }
+
+        if(double.TryParse(operandInput, out firstOperand) == false)
+        {
+            throw new CalculatorException("That's not a number!");
+        }
+            
         return firstOperand;
     }
 
