@@ -26,8 +26,8 @@ public partial class MainPage : ContentPage
         {
             //Get User Input for operation
             var firstOperand = ReadFirstOperand();
-            double secondOperand = double.Parse(_txtRightOp.Text);
-            char opEntry = ((string)_pckOperand.SelectedItem)[0]; //cast to string is possible because SelectedItem is a String
+            var secondOperand = ReadSecondOperand();
+            var opEntry = ReadOpEntry();
 
             //Perform the operation and obtain result --> Method
             double result = PerformArithmeticOperation(opEntry, firstOperand, secondOperand);
@@ -40,12 +40,45 @@ public partial class MainPage : ContentPage
             _txtMathExp.Text = null;
             _txtMathExp.Text = $"{firstOperand} {opEntry} {secondOperand} = {result}";
         }
-        catch (Exception exception)
+        catch (ArgumentNullException ex)
         {
-            Console.WriteLine(exception);
-            throw;
+            //The user did not provide any input
+            await DisplayAlert("Error", "Please provide the required input!", "OK");
         }
+        catch (FormatException ex)
+        {
+            //The user has provided input but it is incorrect (e.g. not a number)
+            await DisplayAlert("Error", "Please provide the correct input!", "OK");
+        }
+        catch (DivideByZeroException ex)
+        {
+            //The user is executing a division and the denominator is zero
+            await DisplayAlert("Error", "Please provide non-zero denominator!", "OK");
+        }
+    }
+
+    private double ReadSecondOperand()
+    {
+        double secondOperand = double.Parse(_txtRightOp.Text);
+        return secondOperand;
+    }
+
+    private char ReadOpEntry()
+    {
+        //Obtain Input
+        string opInput = _pckOperand.SelectedItem as string;
         
+        //Validate Input
+
+        if (String.IsNullOrWhiteSpace(opInput))
+        {
+            throw new CalculatorException("Please select one of the arithmetic operators");
+        }
+
+        char opEntry = opInput[0];
+        
+        //Use Input
+        return opEntry;
     }
 
     private double ReadFirstOperand()
